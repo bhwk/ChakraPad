@@ -1,0 +1,24 @@
+.ProseMirror:focus-visible {
+  outline:none;
+}
+
+/* width */
+::-webkit-scrollbar {
+  margin-left: 1px;
+  width: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: none;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: white;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
