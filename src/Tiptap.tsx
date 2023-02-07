@@ -51,9 +51,9 @@ const Tiptap =  () => {
                 filepath = await open({defaultPath: currentFile});
             } else {
                 filepath = await open();
-                setCurrentFile(filepath.toString())
+                setCurrentFile(filepath)
             }
-            let content = await readTextFile(filepath.toString());
+            let content = await readTextFile(filepath);
             editor?.commands.setContent(JSON.parse(content));
         }   catch(e) {
             console.log(e)
@@ -67,7 +67,7 @@ const Tiptap =  () => {
                 filepath = await save({defaultPath: currentFile});
             } else {
                 filepath = await save();
-                setCurrentFile(filepath.toString())
+                setCurrentFile(filepath)
             }
             await writeTextFile({contents: JSON.stringify(editor?.getJSON()), path: filepath});
             console.log(JSON.stringify(editor?.getJSON()))
@@ -78,7 +78,6 @@ const Tiptap =  () => {
     
     return(
         <Center display={'flex'} flexDirection='column' minW='0' minH='0' maxH={'100vh'} h='100vh' gap={8} bg='gray.600'>
-            <Button onClick={()=> console.log(editor?.getText())}>Save test</Button>
             <Box
                 display={"flex"}
                 alignItems={"center"}
