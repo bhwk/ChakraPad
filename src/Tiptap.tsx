@@ -1,48 +1,27 @@
 import { useEditor, EditorContent } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
+import { TextAlign } from "@tiptap/extension-text-align";
 import { Box, Button, Center, ButtonGroup, IconButton} from "@chakra-ui/react";
-import {AiOutlineAlignCenter, AiOutlineAlignLeft, AiOutlineAlignRight, AiOutlineOrderedList, AiOutlineUnorderedList} from 'react-icons/ai'
+import {AiOutlineAlignCenter, AiOutlineAlignLeft, AiOutlineAlignRight, AiOutlineOrderedList, AiOutlineUnorderedList, AiOutlineSave, AiOutlineFolderOpen} from 'react-icons/ai'
 import {readTextFile, writeTextFile} from '@tauri-apps/api/fs'
 import {open, save} from '@tauri-apps/api/dialog'
 import {listen} from '@tauri-apps/api/event'
+import { saveAs } from "file-saver";
 import React, { useEffect, useState } from "react";
-import { IconContext } from "react-icons";
-import { write, writeFile } from "fs";
 
 const Tiptap =  () => {
     const [currentFile, setCurrentFile] = useState("");
-    const [menuOpen, setMenuOpen] = useState(false);
-    const [menuPayload, setMenuPayload] = useState("")
+
     const editor= useEditor({
         extensions: [
             StarterKit,
+            TextAlign.configure({
+                types:['paragraph']
+            }),
         ],
         enableInputRules: false,
         content: '',
     })
-
-    useEffect(()=> {
-        listen("menu-event", (event) => {
-            setMenuPayload(event.payload.toString())
-            setMenuOpen(true)
-        });
-    }, []);
-
-    useEffect(()=> {
-        if (menuOpen) {
-            switch(menuPayload) {
-                case "save-event":
-                    saveFile();
-                    break;
-                case "open-event":
-                    openFile();
-                    break;
-                default:
-                    break;
-            };
-            setMenuOpen(false)
-        };
-    }, [menuOpen]);
 
     async function openFile() {
         try {
@@ -92,6 +71,22 @@ const Tiptap =  () => {
                 boxShadow={"2xl"}
             >
                 <ButtonGroup
+                    className="fileOperations"
+                    isAttached={true}
+                >
+
+                    <IconButton 
+                        aria-label="save"
+                        onClick={()=> saveFile()}
+                        icon={<AiOutlineSave/>}/>
+                    <IconButton 
+                        aria-label="open"
+                        onClick={()=> openFile()}
+                        icon={<AiOutlineFolderOpen/>}/>
+
+                </ButtonGroup>
+
+                <ButtonGroup
                     className="textStyles"
                     textColor={"gray.400"}
                     fontWeight={"bold"}
@@ -103,6 +98,7 @@ const Tiptap =  () => {
                     <Button onClick={()=> editor?.chain().focus().toggleBold().run()} isActive={editor?.isActive('bold')} tabIndex={-1} h={"50%"} _hover={{color:"white"}}>B</Button>
                     <Button onClick={()=> editor?.chain().focus().toggleItalic().run()} isActive={editor?.isActive('italic')} tabIndex={-1} h={"50%"} _hover={{color:"white"}}><em>I</em></Button>
                 </ButtonGroup>
+
                 <ButtonGroup
                     alignItems={"center"}
                     className="alignment"
@@ -111,12 +107,30 @@ const Tiptap =  () => {
                     isAttached={true}
                     h={"100%"}
                     >
-                        <IconButton h={"50%"} tabIndex={-1} aria-label="align left" _hover={{color:"white"}} icon={<AiOutlineAlignLeft size={20}/>}/>
-                        <IconButton h={"50%"} tabIndex={-1} aria-label="align center" _hover={{color:"white"}} icon={<AiOutlineAlignCenter size={20}/>}/>
-                        <IconButton h={"50%"} tabIndex={-1} aria-label="align right" _hover={{color:"white"}} icon={<AiOutlineAlignRight size={20}/>}/>
+                        <IconButton
+                            aria-label="align left" 
+                            onClick={()=> editor?.chain().focus().setTextAlign('left').run()}
+                            h={"50%"} 
+                            tabIndex={-1} 
+                            _hover={{color:"white"}} 
+                            icon={<AiOutlineAlignLeft size={20}/>}/>
+                        <IconButton 
+                            aria-label="align center" 
+                            onClick={()=> editor?.chain().focus().setTextAlign('center').run()}
+                            h={"50%"} 
+                            tabIndex={-1} 
+                            _hover={{color:"white"}} 
+                            icon={<AiOutlineAlignCenter size={20}/>}/>
+                        <IconButton 
+                            aria-label="align right" 
+                            onClick={()=> editor?.chain().focus().setTextAlign('right').run()}
+                            h={"50%"} 
+                            tabIndex={-1} 
+                            _hover={{color:"white"}} 
+                            icon={<AiOutlineAlignRight size={20}/>}/>
                     </ButtonGroup>
                 
-                <ButtonGroup
+                {/* <ButtonGroup
                     alignItems={"center"}
                     className="list"
                     variant={"outline"}
@@ -124,9 +138,21 @@ const Tiptap =  () => {
                     isAttached={true}
                     h={"100%"}
                 >
-                        <IconButton h={"50%"} tabIndex={-1} aria-label="ordered list" _hover={{color:"white"}} icon={<AiOutlineOrderedList size={20}/>}/>
-                        <IconButton h={"50%"} tabIndex={-1} aria-label="unordered list" _hover={{color:"white"}} icon={<AiOutlineUnorderedList size={20}/>}/>
-                </ButtonGroup>
+                        <IconButton 
+                            aria-label="ordered list" 
+                            onClick={()=> editor?.chain().focus().toggleOrderedList().run()}
+                            h={"50%"} 
+                            tabIndex={-1} 
+                            _hover={{color:"white"}} 
+                            icon={<AiOutlineOrderedList size={20}/>}/>
+                        <IconButton 
+                            aria-label="unordered list" 
+                            onClick={()=> editor?.chain().focus().toggleBulletList().run()}
+                            h={"50%"} 
+                            tabIndex={-1} 
+                            _hover={{color:"white"}} 
+                            icon={<AiOutlineUnorderedList size={20}/>}/>
+                </ButtonGroup> */}
             </Box>
 
             <Box 
