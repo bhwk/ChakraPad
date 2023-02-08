@@ -132,12 +132,13 @@ const Tiptap =  () => {
             <Box 
                 overflow={'hidden scroll'} 
                 w='75%'
-                h='100%' 
+                h='calc(100vh - 15rem)' 
                 textColor='white' 
                 bg='gray.900'
                 roundedTop={"md"}
                 boxShadow={"dark-lg"}
                 p={6}
+                cursor={'text'}
                 onClick={()=> editor?.chain().focus().run()}>
                 <EditorContent editor={editor}/>
             </Box>
