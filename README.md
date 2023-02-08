@@ -12,5 +12,3 @@ Open source rich text editor written using React.
 ## Notes
 
 Currently only able to read and write JSON files that have been exported from the editor.
-
-Text alignment has not been implemented.
