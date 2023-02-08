@@ -10,9 +10,7 @@ use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
 fn main() {
     let quit = CustomMenuItem::new("quit".to_string(), "Quit");
     let close = CustomMenuItem::new("close".to_string(), "Close");
-    let save = CustomMenuItem::new("save".to_string(), "Save");
-    let open = CustomMenuItem::new("open".to_string(), "Open");
-    let submenu = Submenu::new("File".to_string(), Menu::new().add_item(quit).add_item(close).add_item(save).add_item(open));
+    let submenu = Submenu::new("File".to_string(), Menu::new().add_item(quit).add_item(close));
     let menu = Menu::new()
         .add_native_item(MenuItem::Copy)
         .add_item(CustomMenuItem::new("hide","Hide"))
@@ -21,12 +19,6 @@ fn main() {
         .menu(menu)
         .on_menu_event(|event| {
             match event.menu_item_id() {
-                "open" => {
-                    event.window().emit("menu-event", "open-event").unwrap();
-                }
-                "save" => {
-                    event.window().emit("menu-event", "save-event").unwrap();
-                }
                 "quit" => {
                     std::process::exit(0);
                 }
