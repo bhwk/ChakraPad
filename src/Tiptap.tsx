@@ -5,12 +5,23 @@ import { Box, Button, Center, ButtonGroup, IconButton} from "@chakra-ui/react";
 import {AiOutlineAlignCenter, AiOutlineAlignLeft, AiOutlineAlignRight, AiOutlineOrderedList, AiOutlineUnorderedList, AiOutlineSave, AiOutlineFolderOpen} from 'react-icons/ai'
 import {readTextFile, writeTextFile} from '@tauri-apps/api/fs'
 import {open, save} from '@tauri-apps/api/dialog'
-import {listen} from '@tauri-apps/api/event'
+import {emit, listen} from '@tauri-apps/api/event'
 import { saveAs } from "file-saver";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef} from "react";
+import { invoke } from "@tauri-apps/api";
 
 const Tiptap =  () => {
     const [currentFile, setCurrentFile] = useState("");
+    const [app, isApp] = useState(false)
+    const inputFile = useRef(null);
+
+    useEffect(()=> {
+        try {
+            invoke('app_state').then((event:boolean)=> isApp(event)) 
+        } catch(e) {
+            console.log(e)
+        }
+    }, []);
 
     const editor= useEditor({
         extensions: [
@@ -26,6 +37,9 @@ const Tiptap =  () => {
     async function openFile() {
         try {
             let filepath;
+            if (app==false) {
+                inputFile.current.click()
+            }
             if (currentFile) {
                 filepath = await open({defaultPath: currentFile});
             } else {
@@ -42,13 +56,18 @@ const Tiptap =  () => {
     async function saveFile() {
         try {
             let filepath;
-            if (currentFile) {
-                filepath = await save({defaultPath: currentFile});
-            } else {
-                filepath = await save();
-                setCurrentFile(filepath)
+            if (app == false){
+                let blob = new Blob([JSON.stringify(editor?.getJSON())], {type: "text/plain;charset=utf-8"})
+                saveAs(blob, 'test.json')
+            } else{
+                if (currentFile) {
+                    filepath = await save({defaultPath: currentFile});
+                } else {
+                    filepath = await save();
+                    setCurrentFile(filepath)
+                }
+                await writeTextFile({contents: JSON.stringify(editor?.getJSON()), path: filepath});
             }
-            await writeTextFile({contents: JSON.stringify(editor?.getJSON()), path: filepath});
             console.log(JSON.stringify(editor?.getJSON()))
         } catch(err) {
             console.log(err);
@@ -57,6 +76,7 @@ const Tiptap =  () => {
     
     return(
         <Center display={'flex'} flexDirection='column' minW='0' minH='0' maxH={'100vh'} h='100vh' gap={8} bg='gray.600'>
+            <Button onClick={()=> console.log(app)}>click me</Button>
             <Box
                 display={"flex"}
                 alignItems={"center"}
@@ -79,10 +99,12 @@ const Tiptap =  () => {
                         aria-label="save"
                         onClick={()=> saveFile()}
                         icon={<AiOutlineSave/>}/>
+                    <input hidden={true} type="file" ref={inputFile}/>
                     <IconButton 
                         aria-label="open"
                         onClick={()=> openFile()}
-                        icon={<AiOutlineFolderOpen/>}/>
+                        icon={<AiOutlineFolderOpen/>}>
+                        </IconButton>
 
                 </ButtonGroup>
 

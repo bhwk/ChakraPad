@@ -7,6 +7,11 @@
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
 
+#[tauri::command]
+fn app_state() -> bool {
+    true
+}
+
 fn main() {
     let quit = CustomMenuItem::new("quit".to_string(), "Quit");
     let close = CustomMenuItem::new("close".to_string(), "Close");
@@ -28,6 +33,7 @@ fn main() {
                 _ => {}
             }
         })
+        .invoke_handler(tauri::generate_handler![app_state])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
