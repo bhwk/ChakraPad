@@ -5,7 +5,6 @@ import { Box, Button, Center, ButtonGroup, IconButton} from "@chakra-ui/react";
 import {AiOutlineAlignCenter, AiOutlineAlignLeft, AiOutlineAlignRight, AiOutlineSave, AiOutlineFolderOpen} from 'react-icons/ai'
 import {readTextFile, writeTextFile} from '@tauri-apps/api/fs'
 import {open, save} from '@tauri-apps/api/dialog'
-import {listen} from '@tauri-apps/api/event'
 import React, { useEffect, useState } from "react";
 
 const Tiptap =  () => {
@@ -32,7 +31,7 @@ const Tiptap =  () => {
                 setCurrentFile(filepath)
             }
             let content = await readTextFile(filepath);
-            editor?.commands.setContent(JSON.parse(content));
+            editor?.commands.setContent(content);
         }   catch(e) {
             console.log(e)
         }
@@ -47,8 +46,7 @@ const Tiptap =  () => {
                 filepath = await save();
                 setCurrentFile(filepath)
             }
-            await writeTextFile({contents: JSON.stringify(editor?.getJSON()), path: filepath});
-            console.log(JSON.stringify(editor?.getJSON()))
+            await writeTextFile({contents: editor?.getHTML(), path: filepath});
         } catch(err) {
             console.log(err);
         }
