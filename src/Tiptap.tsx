@@ -2,11 +2,10 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import { TextAlign } from "@tiptap/extension-text-align";
 import { Box, Button, Center, ButtonGroup, IconButton} from "@chakra-ui/react";
-import {AiOutlineAlignCenter, AiOutlineAlignLeft, AiOutlineAlignRight, AiOutlineOrderedList, AiOutlineUnorderedList, AiOutlineSave, AiOutlineFolderOpen} from 'react-icons/ai'
+import {AiOutlineAlignCenter, AiOutlineAlignLeft, AiOutlineAlignRight, AiOutlineSave, AiOutlineFolderOpen} from 'react-icons/ai'
 import {readTextFile, writeTextFile} from '@tauri-apps/api/fs'
 import {open, save} from '@tauri-apps/api/dialog'
 import {listen} from '@tauri-apps/api/event'
-import { saveAs } from "file-saver";
 import React, { useEffect, useState } from "react";
 
 const Tiptap =  () => {
@@ -130,29 +129,6 @@ const Tiptap =  () => {
                             icon={<AiOutlineAlignRight size={20}/>}/>
                     </ButtonGroup>
                 
-                {/* <ButtonGroup
-                    alignItems={"center"}
-                    className="list"
-                    variant={"outline"}
-                    color={"gray.400"}
-                    isAttached={true}
-                    h={"100%"}
-                >
-                        <IconButton 
-                            aria-label="ordered list" 
-                            onClick={()=> editor?.chain().focus().toggleOrderedList().run()}
-                            h={"50%"} 
-                            tabIndex={-1} 
-                            _hover={{color:"white"}} 
-                            icon={<AiOutlineOrderedList size={20}/>}/>
-                        <IconButton 
-                            aria-label="unordered list" 
-                            onClick={()=> editor?.chain().focus().toggleBulletList().run()}
-                            h={"50%"} 
-                            tabIndex={-1} 
-                            _hover={{color:"white"}} 
-                            icon={<AiOutlineUnorderedList size={20}/>}/>
-                </ButtonGroup> */}
             </Box>
 
             <Box 

@@ -9,11 +9,9 @@ use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
 
 fn main() {
     let quit = CustomMenuItem::new("quit".to_string(), "Quit");
-    let close = CustomMenuItem::new("close".to_string(), "Close");
-    let submenu = Submenu::new("File".to_string(), Menu::new().add_item(quit).add_item(close));
+    let submenu = Submenu::new("File".to_string(), Menu::new().add_item(quit));
     let menu = Menu::new()
         .add_native_item(MenuItem::Copy)
-        .add_item(CustomMenuItem::new("hide","Hide"))
         .add_submenu(submenu);
     tauri::Builder::default()
         .menu(menu)
@@ -21,9 +19,6 @@ fn main() {
             match event.menu_item_id() {
                 "quit" => {
                     std::process::exit(0);
-                }
-                "close" => {
-                    event.window().close().unwrap();
                 }
                 _ => {}
             }
